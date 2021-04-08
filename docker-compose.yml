@@ -1,0 +1,56 @@
+version: '3.7'
+
+services: 
+  salt-master:
+    container_name: salt-master
+    build:
+      context: .
+      dockerfile: Dockerfile.master
+    hostname: salt-master
+    ports:
+      - 8000:8000
+      - 4505:4505
+      - 4506:4506
+  
+  centos7:
+    container_name: centos7
+    build:
+      context: .
+      dockerfile: Dockerfile.centos7
+    hostname: centos7
+    depends_on:
+      - salt-master
+  
+  ubuntu18:
+    container_name: ubuntu18
+    build:
+      context: .
+      dockerfile: Dockerfile.ubuntu18
+    hostname: ubuntu18
+    depends_on:
+      - salt-master
+
+  opensuse:
+    container_name: opensuse
+    build:
+      context: .
+      dockerfile: Dockerfile.opensuse
+    hostname: opensuse
+    depends_on:
+      - salt-master
+
+  centos7_2:
+    container_name: centos7_2
+    image: salt_centos7
+    hostname: centos7_2
+    depends_on:
+      - salt-master
+      - centos7
+
+  centos7_3:
+    container_name: centos7_3
+    image: salt_centos7
+    hostname: centos7_3
+    depends_on:
+      - salt-master
+      - centos7    

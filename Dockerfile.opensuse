@@ -1,0 +1,11 @@
+FROM opensuse/tumbleweed
+LABEL maintainer="Michele Bologna <mb@michelebologna.net>"
+
+RUN zypper --non-interactive in --no-recommends -y salt-minion && \
+	  zypper clean
+
+RUN sed -i "s|#master: salt|master: salt-master|g" /etc/salt/minion
+
+ENTRYPOINT ["/usr/bin/salt-minion"]
+CMD ["-l", "debug"]
+

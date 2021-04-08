@@ -1,0 +1,39 @@
+FROM ubuntu:18.04
+RUN  apt-get update \
+##################################################################
+# prepare for installing the latest version of saltstack on ubuntu
+  && apt-get install -y wget \
+  && apt-get install -y gnupg2 \
+  && rm -rf /var/lib/apt/lists/* \  
+  && wget -O - https://repo.saltstack.com/apt/ubuntu/18.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add - \
+  && echo 'deb http://repo.saltstack.com/apt/ubuntu/18.04/amd64/latest bionic main' > /etc/apt/sources.list.d/saltstack.list \
+  && apt-get update \  
+###############################################
+# actual installation of master, minion and api
+  && DEBIAN_FRONTEND=noninteractive apt-get install -yq salt-master \
+  && apt-get install -y salt-api \
+##############################################
+# install cherrypy python library for salt-api
+  && apt-get install -y python3-pip \
+  && pip3 install cherrypy \
+###################################
+# add the saltuser and saltpassword  
+  && useradd -d /home/saltuser saltuser \
+  && echo "saltuser:saltpassword"|chpasswd \
+##########################
+# cleanup install packages  
+  && rm -rf /var/lib/apt/lists/*
+
+#########################################################
+# setup authentication and api port on master
+# setup id and master
+COPY master.conf /etc/salt/master.d/  
+
+
+##########################
+# at startup start the services: master, api
+CMD /etc/init.d/salt-master start \
+  && salt-api start \
+  && bash  
+
+
