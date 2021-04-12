@@ -20,7 +20,16 @@ services:
     hostname: centos7
     depends_on:
       - salt-master
-  
+
+  centos8:
+    container_name: centos8
+    build:
+      context: .
+      dockerfile: Dockerfile.centos8
+    hostname: centos8
+    depends_on:
+      - salt-master
+
   ubuntu18:
     container_name: ubuntu18
     build:

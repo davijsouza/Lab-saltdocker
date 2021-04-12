@@ -12,6 +12,7 @@ RUN  apt-get update \
 # actual installation of master, minion and api
   && DEBIAN_FRONTEND=noninteractive apt-get install -yq salt-master \
   && apt-get install -y salt-api \
+  && apt-get install -y salt-minion \
 ##############################################
 # install cherrypy python library for salt-api
   && apt-get install -y python3-pip \
@@ -27,13 +28,15 @@ RUN  apt-get update \
 #########################################################
 # setup authentication and api port on master
 # setup id and master
-COPY master.conf /etc/salt/master.d/  
+COPY master.conf /etc/salt/master.d/ 
+COPY minion.conf /etc/salt/minion.d/  
 
 
 ##########################
 # at startup start the services: master, api
 CMD /etc/init.d/salt-master start \
   && salt-api start \
+  && salt-minion start \
   && bash  
 
 
