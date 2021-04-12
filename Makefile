@@ -15,3 +15,6 @@ status:
 
 image:
 	docker images
+
+remove:
+	docker container rm $(docker container ls -a -q)	
